@@ -112,6 +112,89 @@ class EntertainmentAdmin(admin.ModelAdmin):
         return super().change_view(request, object_id, form_url, extra_context)   
 
 
+class ExcursionPriceInline(admin.TabularInline):
+    model = ExcursionPrice
+    extra = 0
+
+
+class PhotoExcursionForm(forms.ModelForm):
+    file = forms.ImageField(widget=AdminFileWidget)
+
+    class Meta:
+        model = PhotoExcursion
+        fields = ['file', 'id']
+
+    def clean_file(self):
+        file = self.cleaned_data.get('file')
+        if file and re.search(r'[а-яА-Я]', file.name):
+            raise ValidationError('Russian letters are not allowed')
+        return file
+
+
+class PhotoExcursionInline(admin.TabularInline):
+    model = PhotoExcursion
+    extra = 0
+    readonly_fields = ['preview']
+    fields = ['preview', 'file']
+    form = PhotoExcursionForm
+
+    def preview(self, obj):
+        if obj.file:
+            img = get_thumbnail(obj.file, '70x70', crop='center', quality=99)
+            return mark_safe(f'<img src="{img.url}">')
+
+    preview.short_description = 'Превью'
+    preview.allow_tags = True
+
+
+class ExcursionForm(forms.ModelForm):
+    title = forms.CharField(max_length=256, label='Название')
+    description_short = forms.CharField(
+        max_length=300,
+        widget=forms.Textarea(attrs={'cols': 60, 'rows': 6}),
+        label='Короткое описание',
+    )
+    description_long = forms.CharField(
+        widget=forms.Textarea(attrs={'cols': 60, 'rows': 6}),
+        label='Полное описание',
+        required=False,
+    )
+
+
+@admin.register(Excursion)
+class ExcursionAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ('Экскурсия', {'classes': ['wide', 'extrapretty'], 'fields': [
+            'title', 'description_short', 'description_long',
+        ]})
+    ]
+    list_display = ['preview', 'title_bold']
+    list_display_links = ['preview', 'title_bold']
+    save_on_top = True
+    inlines = [PhotoExcursionInline, ExcursionPriceInline]
+    form = ExcursionForm
+
+    @admin.display(description='Фото')
+    def preview(self, obj):
+        photo = obj.photos.all().first()
+        if photo and photo.file:
+            img = get_thumbnail(photo.file, '70x70', crop='center', quality=99)
+            return mark_safe(f'<img src="{img.url}">')
+
+    @admin.display(description='Название')
+    def title_bold(self, obj):
+        return mark_safe(f'<b>{obj.title}</b>')
+
+    def get_inline_formsets(self, request, formsets, inline_instances, obj: Any | None = ...):
+        inline_admin_formsets = super().get_inline_formsets(request, formsets, inline_instances, obj)
+        return manual_formsets.improve_inline_formset(inline_admin_formsets)
+
+    def change_view(self, request, object_id: str = None, form_url: str = '', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['model_title'] = self.model._meta.verbose_name
+        return super().change_view(request, object_id, form_url, extra_context)
+
+
 class PhotoNearestForm(forms.ModelForm):
     file = forms.ImageField(widget=AdminFileWidget)
 

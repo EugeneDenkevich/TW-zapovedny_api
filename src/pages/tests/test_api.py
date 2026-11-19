@@ -26,6 +26,7 @@ class MainPageAPITestCase(APITestCase):
         expected_data = {'photos': [f'http://testserver/media/photo_main_page/tests_media/{file_name}'],
                          'title': 'test', 'description': None, 'house_title': 'test',
                          'house_description': None, 'kitchen_title': 'Кухня', 'kitchen_description': None,
-                         'entertainment_title': 'test', 'entertainment_description': None}
+                         'entertainment_title': 'test', 'entertainment_description': None,
+                         'excursion_title': 'Экскурсии', 'excursion_description': None}
         real_data = dict(response.data[0])
         self.assertEqual(real_data, expected_data)

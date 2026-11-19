@@ -36,6 +36,10 @@ class MainPage(Singleton):
                                            verbose_name='Развлечения')
     entertainment_description = models.TextField(blank=True, null=True,
                                                  verbose_name='Описание')
+    excursion_title = models.CharField(max_length=256, default='Экскурсии',
+                                       verbose_name='Экскурсии')
+    excursion_description = models.TextField(blank=True, null=True,
+                                             verbose_name='Описание')
     was_changed = models.DateField(auto_now=True, verbose_name=u'Изменено')
 
     def __str__(self):
@@ -86,6 +90,11 @@ class BackPhoto(Singleton):
                                 validators=[validate_image_size,
                                             validate_name], verbose_name='Фон Развлечения',
                                 blank=True, null=True)
+    photo_excursion = models.ImageField(upload_to='photo_pages',
+                                        validators=[validate_image_size,
+                                                    validate_name],
+                                        verbose_name='Фон Экскурсии',
+                                        blank=True, null=True)
     was_changed = models.DateField(auto_now=True, verbose_name=u'Изменено')
 
     class Meta:

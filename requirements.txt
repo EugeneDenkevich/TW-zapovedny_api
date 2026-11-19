@@ -74,3 +74,4 @@ urllib3==1.26.15
 whitenoise==6.4.0
 yarl==1.9.4
 matplotlib==3.8.4
+httpx

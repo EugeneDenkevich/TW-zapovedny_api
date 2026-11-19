@@ -12,6 +12,7 @@ db
 *.sqlite3
 src/static
 schema.yml
+.env-prod
 
 ### Django ###
 *.log

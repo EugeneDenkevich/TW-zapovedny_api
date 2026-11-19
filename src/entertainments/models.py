@@ -54,6 +54,59 @@ class PhotoEntertainment(models.Model):
 
     def __str__(self):
         return ''
+
+
+class Excursion(models.Model):
+    title = models.CharField(max_length=256, verbose_name='Название')
+    description_short = models.TextField(max_length=300, verbose_name='Короткое описание')
+    description_long = models.TextField(verbose_name='Полное описание', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Экскурсия'
+        verbose_name_plural = 'Экскурсии'
+
+    def __str__(self):
+        return self.title
+
+
+class ExcursionPrice(models.Model):
+    header = models.CharField(max_length=256, verbose_name='Услуга')
+    price = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        verbose_name='Цена',
+        blank=True,
+        null=True,
+        validators=get_price_validators(),
+    )
+    excursion = models.ForeignKey(
+        to='Excursion', on_delete=models.CASCADE, related_name='prices')
+
+    class Meta:
+        verbose_name = 'Цена экскурсии'
+        verbose_name_plural = 'Услуги и цены'
+
+    def __str__(self):
+        return ''
+
+
+class PhotoExcursion(models.Model):
+    file = models.ImageField(
+        upload_to='photo_excursion',
+        null=True,
+        blank=True,
+        verbose_name='Фото',
+        validators=[validate_image_size],
+    )
+    excursion = models.ForeignKey(
+        to='Excursion', on_delete=models.CASCADE, related_name='photos')
+
+    class Meta:
+        verbose_name = 'Фото экскурсии'
+        verbose_name_plural = 'Фото'
+
+    def __str__(self):
+        return ''
     
 
 class NearestPlace(models.Model):

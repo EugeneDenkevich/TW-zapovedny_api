@@ -8,6 +8,8 @@ from rest_framework.serializers import (
 from .models import (
     EntertainmentPrice,
     Entertainment,
+    ExcursionPrice,
+    Excursion,
     NearestPlace,
     Galery,
 )
@@ -40,6 +42,26 @@ class EntertainmentSerializer(ModelSerializer):
 
     class Meta:
         model = Entertainment
+        fields = '__all__'
+
+
+class ExcursionPriceSerializer(ModelSerializer):
+    service_name = serializers.CharField()
+
+    class Meta:
+        model = ExcursionPrice
+        fields = ['service_name']
+
+    def to_representation(self, instance):
+        return {instance.header: instance.price}
+
+
+class ExcursionSerializer(ModelSerializer):
+    prices = ExcursionPriceSerializer(many=True, required=False)
+    photos = FileListSerializer(required=False)
+
+    class Meta:
+        model = Excursion
         fields = '__all__'
 
 
