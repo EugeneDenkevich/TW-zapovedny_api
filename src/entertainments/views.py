@@ -15,6 +15,15 @@ class EntertainmentViewSet(mixins.ListModelMixin,
     serializer_class = EntertainmentSerializer
 
 
+@method_decorator(name='retrieve', decorator=excursion_schema.retrieve())
+@method_decorator(name='list', decorator=excursion_schema.list())
+class ExcursionViewSet(mixins.ListModelMixin,
+                       mixins.RetrieveModelMixin,
+                       GenericViewSet):
+    queryset = Excursion.objects.all().prefetch_related('prices', 'photos')
+    serializer_class = ExcursionSerializer
+
+
 @method_decorator(name='list', decorator=galery_schema.list())
 class GaleryViewSet(mixins.ListModelMixin,
                            GenericViewSet):

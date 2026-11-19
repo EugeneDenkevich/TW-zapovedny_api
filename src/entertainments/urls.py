@@ -6,6 +6,7 @@ from .views import *
 
 router = routers.DefaultRouter()
 router.register('entertainments', EntertainmentViewSet, basename='entertainment')
+router.register('excursions', ExcursionViewSet, basename='excursion')
 router.register('galeries', GaleryViewSet, basename='galeries')
 router.register('nearests', NearestPlaceViewSet, basename='nearests')
 

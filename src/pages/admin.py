@@ -19,6 +19,8 @@ class MainPageForm(forms.ModelForm):
                                     help_text='Можете указать своё название для раздела "Кухня"')
     entertainment_title = forms.CharField(max_length=256, label = u'Развлечения',
                                           help_text='Можете указать своё название для раздела "Развлечения"')
+    excursion_title = forms.CharField(max_length=256, label='Экскурсии',
+                                      help_text='Можете указать своё название для раздела "Экскурсии"')
     description = forms.CharField(widget=forms.Textarea(attrs={'cols': 40, 'rows': 5}), 
                                   label = u'Описание', required=False,
                                   help_text='Расскажите о своей усадьбе')
@@ -32,6 +34,9 @@ class MainPageForm(forms.ModelForm):
                                                 label = u'Описание', required=False,
                                                 help_text='Расскажите здесь, чем вы будете '
                                                           'равзлекать своих гостей.')
+    excursion_description = forms.CharField(widget=forms.Textarea(attrs={'cols': 40, 'rows': 5}),
+                                            label='Описание', required=False,
+                                            help_text='Кратко расскажите об экскурсиях.')
 
 
 class PhotoObjectFrom(forms.ModelForm):
@@ -104,7 +109,11 @@ class MainPageAdmin(admin.ModelAdmin):
                     'entertainment_description',
                 ]
             },
-        )
+        ),
+        (
+            'Экскурсии',
+            {'fields': ['excursion_title', 'excursion_description']},
+        ),
     ]
     list_display = [
         'change',
@@ -156,6 +165,9 @@ class BackPhotoFrom(forms.ModelForm):
     photo_e = forms.ImageField(widget=BackPhotoAdminFileWidget,
                                required=False,
                                label='Фон Развлечения')
+    photo_excursion = forms.ImageField(widget=BackPhotoAdminFileWidget,
+                                       required=False,
+                                       label='Фон Экскурсии')
 
 
 @admin.register(models.BackPhoto)
